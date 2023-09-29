@@ -1,11 +1,54 @@
 import { RiAppsLine } from "react-icons/ri";
-import menus from "../utilities/SidebarMenus";
+import menus from "../utilities/sidebar-menus";
 import SidebarList from "../components/SidebarList";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../utilities/redux/hooks";
+import { useCookies } from "react-cookie";
+import { useEffect, useState } from "react";
+import client from "../api/client";
+import { useApi } from "../utilities/api";
+import checkToken from "../api/requests/auth/check-token";
+import { AxiosError } from "axios";
 
 export default function Layout() {
+  const [cookies, , removeCookies] = useCookies(["token"]);
+  const navigate = useNavigate();
   const interfaceData = useAppSelector((state) => state.interface);
+  const [mount, setMount] = useState<boolean | AxiosError>(false);
+
+  const checkTokenApi = useApi({
+    api: checkToken,
+    onSuccess: () => {
+      setMount(true);
+    },
+    onFail: (e) => {
+      if ((e as AxiosError)?.response?.status === 401) {
+        removeCookies("token", {
+          path: "/",
+        });
+      } else {
+        setMount(e as AxiosError);
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (cookies.token) {
+      client.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${cookies.token}`;
+      checkTokenApi.process({});
+    } else {
+      navigate("/auth/login", {
+        replace: true,
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cookies]);
+
+  if (!mount) return null;
+  if (mount instanceof AxiosError) return "Error";
 
   return (
     <div className="w-full min-h-screen bg-gray-100 flex flex-col">
@@ -22,6 +65,7 @@ export default function Layout() {
           <div className="flex flex-col space-y-1 py-5">
             {menus.map((menu, index) => (
               <SidebarList
+                path={menu.path}
                 key={`${index}`}
                 icon={menu.icon}
                 active={interfaceData.activeBar === menu.name}

@@ -9,24 +9,29 @@ import {
 type SidebarMenuItem = {
   name: string;
   icon: IconType;
+  path: string;
 };
 
 const menus: SidebarMenuItem[] = [
   {
     name: "Dashboard",
     icon: RiDashboard2Line,
+    path: "/",
   },
   {
     name: "Pengguna",
     icon: RiGroupLine,
+    path: "/users",
   },
   {
     name: "Lokasi",
     icon: RiMapPin2Line,
+    path: "/",
   },
   {
     name: "Absensi",
     icon: RiFingerprint2Line,
+    path: "/",
   },
 ];
 
