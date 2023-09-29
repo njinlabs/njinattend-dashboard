@@ -12,8 +12,11 @@ import {
   RiDeleteBin2Line,
   RiAddBoxLine,
   RiCamera2Line,
+  RiUser6Fill,
 } from "react-icons/ri";
 import Button from "../components/form/Button";
+import { FileType } from "../api/models/file";
+import generateUrl from "../utilities/generate-url";
 
 export default function User() {
   const dispatch = useAppDispatch();
@@ -45,6 +48,22 @@ export default function User() {
       data={(userIndexApi.data?.rows || []) as UserType[]}
       columns={[
         "indexing",
+        {
+          key: "avatar",
+          label: "Foto",
+          render: (value) => (
+            <div className="w-8 h-8 rounded-full bg-primary-100 relative overflow-hidden flex justify-center items-center">
+              {value ? (
+                <img
+                  src={generateUrl((value as FileType)?.url as string)}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <RiUser6Fill className="text-xl text-primary-500" />
+              )}
+            </div>
+          ),
+        },
         {
           key: "registered_number",
           label: "NIP",
