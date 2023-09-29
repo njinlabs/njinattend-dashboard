@@ -28,6 +28,7 @@ import { useForm, Controller } from "react-hook-form";
 import { OptionType } from "../components/form/select-field/BasicSelectField";
 import userStore from "../api/requests/user/user-store";
 import { toast } from "react-toastify";
+import userUpdate from "../api/requests/user/user-update";
 
 const resetData: Partial<UserType> = {
   id: 0,
@@ -51,12 +52,13 @@ export default function User() {
     formState: { errors },
     reset,
     handleSubmit,
+    watch,
   } = useForm({
     defaultValues: resetData,
   });
 
   const onSubmit = (data: Partial<UserType>) => {
-    toast.promise(userStoreApi.process(data), {
+    toast.promise((data.id ? userUpdateApi : userStoreApi).process(data), {
       pending: "Menyimpan...",
       error: "Terjadi kesalahan",
       success: "Berhasil disimpan",
@@ -69,6 +71,14 @@ export default function User() {
 
   const userStoreApi = useApi({
     api: userStore,
+    onSuccess: () => {
+      composeModal.close();
+      userIndexApi.process({ ...userIndexApi.savedProps });
+    },
+  });
+
+  const userUpdateApi = useApi({
+    api: userUpdate,
     onSuccess: () => {
       composeModal.close();
       userIndexApi.process({ ...userIndexApi.savedProps });
@@ -158,9 +168,22 @@ export default function User() {
             key: null,
             label: "",
             action: true,
-            render: () => (
+            render: (_, index) => (
               <>
-                <ActionButton color="yellow" icon={RiPenNibLine}>
+                <ActionButton
+                  color="yellow"
+                  icon={RiPenNibLine}
+                  type="button"
+                  onClick={() => {
+                    reset({
+                      ...userIndexApi.data?.rows[index],
+                      birthday: moment(
+                        userIndexApi.data?.rows[index].birthday
+                      ).format("YYYY-MM-DD"),
+                    });
+                    composeModal.open();
+                  }}
+                >
                   Edit
                 </ActionButton>
                 <ActionButton color="red" icon={RiDeleteBin2Line}>
@@ -193,7 +216,10 @@ export default function User() {
             .process({ ...(userIndexApi.savedProps || {}), page })
         }
       />
-      <Modal control={composeModal} title="Tambah Pengguna">
+      <Modal
+        control={composeModal}
+        title={watch("id") ? "Edit Pengguna" : "Tambah Pengguna"}
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
             control={control}
@@ -225,7 +251,9 @@ export default function User() {
             label="Password"
             containerClassName="mb-5"
             message={errors.password?.message}
-            {...register("password", { required: "Wajib diisi" })}
+            {...register("password", {
+              required: watch("id") ? false : "Wajib diisi",
+            })}
           />
           <Controller
             control={control}
