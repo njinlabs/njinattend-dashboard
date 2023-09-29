@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../utilities/redux/hooks";
 import { setInterface } from "../utilities/redux/slices/interface";
 import { useApi } from "../utilities/api";
@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import userUpdate from "../api/requests/user/user-update";
 import { confirmAlert } from "../components/sweet-alert";
 import userDestroy from "../api/requests/user/user-destroy";
+import saveFaceModel from "../api/requests/user/save-face-model";
 
 const resetData: Partial<UserType> = {
   id: 0,
@@ -47,6 +48,10 @@ const resetData: Partial<UserType> = {
 export default function User() {
   const dispatch = useAppDispatch();
   const { control: composeModal } = useModal({});
+  const { control: faceModal, state: faceState } = useModal({
+    initialState: {} as { id?: number },
+  });
+  const [face, setFace] = useState<File | null>(null);
 
   const {
     register,
@@ -81,6 +86,14 @@ export default function User() {
     });
   };
 
+  const onSaveFace = (id: number) => {
+    toast.promise(saveFaceModelApi.process({ id, face: face! }), {
+      pending: "Menyimpan",
+      error: "Terjadi kesalahan",
+      success: "Model berhasil disimpan",
+    });
+  };
+
   const userIndexApi = useApi({
     api: userIndex,
   });
@@ -105,6 +118,14 @@ export default function User() {
     api: userDestroy,
     onSuccess: () => {
       composeModal.close();
+      userIndexApi.process({ ...userIndexApi.savedProps });
+    },
+  });
+
+  const saveFaceModelApi = useApi({
+    api: saveFaceModel,
+    onSuccess: () => {
+      faceModal.close();
       userIndexApi.process({ ...userIndexApi.savedProps });
     },
   });
@@ -170,10 +191,17 @@ export default function User() {
           {
             key: "face",
             label: "Face Recognition",
-            render: (value) => (
+            render: (value, index) => (
               <ActionButton
                 color={value ? "blue-outline" : "green-outline"}
                 icon={RiCamera2Line}
+                type="button"
+                onClick={() => {
+                  setFace(null);
+                  faceModal.open({
+                    id: userIndexApi.data?.rows[index].id,
+                  });
+                }}
               >
                 {value ? "Ganti" : "Daftarkan"}
               </ActionButton>
@@ -244,6 +272,26 @@ export default function User() {
             .process({ ...(userIndexApi.savedProps || {}), page })
         }
       />
+      <Modal control={faceModal} title="Atur Face Recognition">
+        <AvatarField
+          value={face}
+          onChange={(value) => setFace(value)}
+          className="mb-5"
+        />
+        <div className="flex justify-center items-center">
+          <Button
+            type="button"
+            className="flex justify-center items-center space-x-2"
+            disabled={!face}
+            onClick={() => {
+              onSaveFace(faceState.id!);
+            }}
+          >
+            <RiSave2Fill />
+            <span>Simpan</span>
+          </Button>
+        </div>
+      </Modal>
       <Modal
         control={composeModal}
         title={watch("id") ? "Edit Pengguna" : "Tambah Pengguna"}

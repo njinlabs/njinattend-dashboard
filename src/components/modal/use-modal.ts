@@ -16,10 +16,10 @@ type ModalHookReturn<T> = {
   control: ModalControl<T>;
 };
 
-export type ModalParams = {
+export type ModalParams<T> = {
   children?: ReactNode;
   title: string;
-  control: ModalControl;
+  control: ModalControl<T>;
   onClose?: () => void;
 };
 

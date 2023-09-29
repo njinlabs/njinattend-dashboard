@@ -2,12 +2,12 @@ import { Fragment, useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { ModalParams } from "./use-modal";
 
-export default function Modal({
+export default function Modal<T>({
   children,
   title,
   control,
   onClose = () => {},
-}: ModalParams) {
+}: ModalParams<T>) {
   const [mount, setMount] = useState(false);
 
   useEffect(() => {
