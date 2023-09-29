@@ -5,3 +5,44 @@
 body {
   @apply text-gray-700 font-roboto;
 }
+
+.alert {
+  @apply rounded bg-white w-11/12 lg:w-[460px] !important;
+}
+
+.alert .swal2-icon {
+  @apply mx-auto -mt-16 w-32 h-32 border-8 border-white !important;
+  background-color: currentColor;
+}
+
+.alert .swal2-success {
+  @apply text-green-600;
+}
+
+.alert .swal2-error {
+  @apply text-red-600;
+}
+
+.alert .swal2-icon-content {
+  @apply text-white text-8xl !important;
+}
+
+.alert .swal2-title {
+  @apply text-2xl text-gray-800 p-0 px-8 mt-5 font-montserrat font-bold !important;
+}
+
+.alert .swal2-html-container {
+  @apply text-lg text-gray-600 m-0 mt-1 p-0 px-8 font-roboto !important;
+}
+
+.alert .swal2-actions {
+  @apply w-full m-0 -mb-5 mt-8 px-5 pb-5 flex items-stretch !important;
+}
+
+.alert .swal2-actions button {
+  @apply flex-1 space-x-5 px-5 py-3 rounded-sm !important;
+}
+
+.alert .swal2-confirm {
+  @apply bg-primary-500 text-gray-800 rounded !important;
+}

@@ -29,6 +29,8 @@ import { OptionType } from "../components/form/select-field/BasicSelectField";
 import userStore from "../api/requests/user/user-store";
 import { toast } from "react-toastify";
 import userUpdate from "../api/requests/user/user-update";
+import { confirmAlert } from "../components/sweet-alert";
+import userDestroy from "../api/requests/user/user-destroy";
 
 const resetData: Partial<UserType> = {
   id: 0,
@@ -65,6 +67,20 @@ export default function User() {
     });
   };
 
+  const onDelete = (id: number) => {
+    confirmAlert({
+      text: "Anda akan menghapus pengguna ini",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        toast.promise(userDestroyApi.process(id), {
+          pending: "Menghapus...",
+          error: "Terjadi kesalahan",
+          success: "Berhasil dihapus",
+        });
+      }
+    });
+  };
+
   const userIndexApi = useApi({
     api: userIndex,
   });
@@ -79,6 +95,14 @@ export default function User() {
 
   const userUpdateApi = useApi({
     api: userUpdate,
+    onSuccess: () => {
+      composeModal.close();
+      userIndexApi.process({ ...userIndexApi.savedProps });
+    },
+  });
+
+  const userDestroyApi = useApi({
+    api: userDestroy,
     onSuccess: () => {
       composeModal.close();
       userIndexApi.process({ ...userIndexApi.savedProps });
@@ -186,7 +210,11 @@ export default function User() {
                 >
                   Edit
                 </ActionButton>
-                <ActionButton color="red" icon={RiDeleteBin2Line}>
+                <ActionButton
+                  color="red"
+                  icon={RiDeleteBin2Line}
+                  onClick={() => onDelete(userIndexApi.data!.rows[index].id!)}
+                >
                   Hapus
                 </ActionButton>
               </>
