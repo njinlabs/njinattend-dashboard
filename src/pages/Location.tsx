@@ -22,6 +22,8 @@ import locationStore from "../api/requests/location/location-store";
 import { toast } from "react-toastify";
 import { LatLngExpression } from "leaflet";
 import locationUpdate from "../api/requests/location/location-update";
+import locationDestroy from "../api/requests/location/location-destroy";
+import { confirmAlert } from "../components/sweet-alert";
 
 const resetData: Partial<LocationType> = {
   id: 0,
@@ -57,8 +59,17 @@ export default function Location() {
       locationIndexApi.process({ ...locationIndexApi.savedProps });
     },
   });
+
   const locationUpdateApi = useApi({
     api: locationUpdate,
+    onSuccess: () => {
+      composeModal.close();
+      locationIndexApi.process({ ...locationIndexApi.savedProps });
+    },
+  });
+
+  const locationDestroyApi = useApi({
+    api: locationDestroy,
     onSuccess: () => {
       composeModal.close();
       locationIndexApi.process({ ...locationIndexApi.savedProps });
@@ -74,6 +85,20 @@ export default function Location() {
         success: "Berhasil disimpan",
       }
     );
+  };
+
+  const onDelete = (id: number) => {
+    confirmAlert({
+      text: "Anda akan menghapus lokasi ini",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        toast.promise(locationDestroyApi.process(id), {
+          pending: "Menghapus...",
+          error: "Terjadi kesalahan",
+          success: "Berhasil dihapus",
+        });
+      }
+    });
   };
 
   useEffect(() => {
@@ -151,7 +176,13 @@ export default function Location() {
                 >
                   Edit
                 </ActionButton>
-                <ActionButton color="red" icon={RiDeleteBin2Line}>
+                <ActionButton
+                  color="red"
+                  icon={RiDeleteBin2Line}
+                  onClick={() =>
+                    onDelete(locationIndexApi.data!.rows[index].id!)
+                  }
+                >
                   Hapus
                 </ActionButton>
               </>
