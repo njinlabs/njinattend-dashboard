@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Blank from "./pages/Blank";
 import Layout from "./pages/Layout";
 import User from "./pages/User";
+import Location from "./pages/Location";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <User />,
+      },
+      {
+        path: "/location",
+        element: <Location />,
       },
     ],
   },

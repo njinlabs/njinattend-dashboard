@@ -26,7 +26,7 @@ const menus: SidebarMenuItem[] = [
   {
     name: "Lokasi",
     icon: RiMapPin2Line,
-    path: "/",
+    path: "/location",
   },
   {
     name: "Absensi",
