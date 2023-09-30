@@ -21,6 +21,7 @@ import TextField from "../components/form/TextField";
 import locationStore from "../api/requests/location/location-store";
 import { toast } from "react-toastify";
 import { LatLngExpression } from "leaflet";
+import locationUpdate from "../api/requests/location/location-update";
 
 const resetData: Partial<LocationType> = {
   id: 0,
@@ -40,6 +41,7 @@ export default function Location() {
     formState: { errors },
     register,
     handleSubmit,
+    watch,
   } = useForm({
     defaultValues: resetData,
   });
@@ -55,13 +57,23 @@ export default function Location() {
       locationIndexApi.process({ ...locationIndexApi.savedProps });
     },
   });
+  const locationUpdateApi = useApi({
+    api: locationUpdate,
+    onSuccess: () => {
+      composeModal.close();
+      locationIndexApi.process({ ...locationIndexApi.savedProps });
+    },
+  });
 
   const onSubmit = (data: Partial<LocationType>) => {
-    toast.promise(locationStoreApi.process(data), {
-      pending: "Menyimpan...",
-      error: "Terjadi kesalahan",
-      success: "Berhasil disimpan",
-    });
+    toast.promise(
+      (data.id ? locationUpdateApi : locationStoreApi).process(data),
+      {
+        pending: "Menyimpan...",
+        error: "Terjadi kesalahan",
+        success: "Berhasil disimpan",
+      }
+    );
   };
 
   useEffect(() => {
@@ -120,9 +132,23 @@ export default function Location() {
             key: null,
             label: "",
             action: true,
-            render: () => (
+            render: (_, index) => (
               <>
-                <ActionButton color="yellow" icon={RiPenNibLine} type="button">
+                <ActionButton
+                  color="yellow"
+                  icon={RiPenNibLine}
+                  type="button"
+                  onClick={() => {
+                    reset({
+                      ...locationIndexApi.data!.rows[index],
+                      latlong: {
+                        lat: locationIndexApi.data!.rows[index].latitude,
+                        lng: locationIndexApi.data!.rows[index].longitude,
+                      },
+                    });
+                    composeModal.open();
+                  }}
+                >
                   Edit
                 </ActionButton>
                 <ActionButton color="red" icon={RiDeleteBin2Line}>
@@ -155,7 +181,13 @@ export default function Location() {
             .process({ ...(locationIndexApi.savedProps || {}), page })
         }
       />
-      <Modal control={composeModal} title="Tambah Lokasi">
+      <Modal
+        control={composeModal}
+        title={watch("id") ? "Edit Lokasi" : "Tambah Lokasi"}
+        onClose={() => {
+          reset(resetData);
+        }}
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             type="string"

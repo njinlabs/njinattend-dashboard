@@ -215,12 +215,12 @@ export default function Table<T>({
               {data.map((row, rowIndex) => (
                 <tr
                   key={`${rowIndex}`}
-                  className="bg-transparent hover:bg-gray-100 group"
+                  className="bg-transparent hover:bg-gray-100 group border-b"
                 >
                   {columns.map((item, index) => (
                     <td
                       key={`${index}`}
-                      className={`py-4 px-5 text-sm border-b ${
+                      className={`py-4 px-5 text-sm ${
                         item !== "indexing" && item.action
                           ? "sticky right-0 bg-white group-hover:bg-gray-100 flex justify-end items-center space-x-2 text-sm"
                           : ""
