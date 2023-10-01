@@ -1,7 +1,7 @@
 import { IconType } from "react-icons";
 import {
   RiDashboard2Line,
-  RiFingerprint2Line,
+  RiTableLine,
   RiGroupLine,
   RiMapPin2Line,
 } from "react-icons/ri";
@@ -29,9 +29,9 @@ const menus: SidebarMenuItem[] = [
     path: "/location",
   },
   {
-    name: "Absensi",
-    icon: RiFingerprint2Line,
-    path: "/",
+    name: "Laporan",
+    icon: RiTableLine,
+    path: "/attendance",
   },
 ];
 

@@ -1,3 +1,4 @@
+import { AttendanceType } from "./attendance";
 import { FileType } from "./file";
 
 export type UserType = {
@@ -14,4 +15,5 @@ export type UserType = {
   updated_at: string;
   token?: string;
   face?: boolean;
+  attendance?: Partial<AttendanceType>;
 };

@@ -4,6 +4,7 @@ import Blank from "./pages/Blank";
 import Layout from "./pages/Layout";
 import User from "./pages/User";
 import Location from "./pages/Location";
+import Attendance from "./pages/Attendance";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "/location",
         element: <Location />,
+      },
+      {
+        path: "/attendance",
+        element: <Attendance />,
       },
     ],
   },
