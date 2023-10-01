@@ -1,4 +1,4 @@
-import { RiAppsLine } from "react-icons/ri";
+import { RiAppsLine, RiLogoutBoxRLine } from "react-icons/ri";
 import menus from "../utilities/sidebar-menus";
 import SidebarList from "../components/SidebarList";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -9,12 +9,36 @@ import client from "../api/client";
 import { useApi } from "../utilities/api";
 import checkToken from "../api/requests/auth/check-token";
 import { AxiosError } from "axios";
+import signOut from "../api/requests/auth/sign-out";
+import { confirmAlert } from "../components/sweet-alert";
+import { toast } from "react-toastify";
 
 export default function Layout() {
   const [cookies, , removeCookies] = useCookies(["token"]);
   const navigate = useNavigate();
   const interfaceData = useAppSelector((state) => state.interface);
   const [mount, setMount] = useState<boolean | AxiosError>(false);
+
+  const signOutApi = useApi({
+    api: signOut,
+    onSuccess: () => {
+      removeCookies("token", {
+        path: "/",
+      });
+    },
+  });
+
+  const onLogout = () => {
+    confirmAlert({ text: "Kamu yakin ingin keluar?" }).then((result) => {
+      if (result.isConfirmed) {
+        toast.promise(signOutApi.process({}), {
+          pending: "Memproses...",
+          success: "Berhasil keluar",
+          error: "Terjadi kesalahan",
+        });
+      }
+    });
+  };
 
   const checkTokenApi = useApi({
     api: checkToken,
@@ -39,6 +63,7 @@ export default function Layout() {
       ] = `Bearer ${cookies.token}`;
       checkTokenApi.process({});
     } else {
+      client.defaults.headers.common["Authorization"] = undefined;
       navigate("/auth/login", {
         replace: true,
       });
@@ -73,6 +98,16 @@ export default function Layout() {
                 {menu.name}
               </SidebarList>
             ))}
+            <SidebarList
+              path="#"
+              onClick={(e) => {
+                e.preventDefault();
+                onLogout();
+              }}
+              icon={RiLogoutBoxRLine}
+            >
+              Keluar
+            </SidebarList>
           </div>
         </div>
         <div className="flex-1 p-5 flex flex-col">

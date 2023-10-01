@@ -5,6 +5,7 @@ import Layout from "./pages/Layout";
 import User from "./pages/User";
 import Location from "./pages/Location";
 import Attendance from "./pages/Attendance";
+import Install from "./pages/Install";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/auth/login",
     element: <Login />,
+  },
+  {
+    path: "/install",
+    element: <Install />,
   },
 ]);
 

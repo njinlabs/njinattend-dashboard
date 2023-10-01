@@ -47,7 +47,7 @@ const resetData: Partial<UserType> = {
 
 export default function User() {
   const dispatch = useAppDispatch();
-  const { control: composeModal } = useModal({});
+  const { control: composeModal, state: composeState } = useModal({});
   const { control: faceModal, state: faceState } = useModal({
     initialState: {} as { id?: number },
   });
@@ -64,12 +64,22 @@ export default function User() {
     defaultValues: resetData,
   });
 
-  const onSubmit = (data: Partial<UserType>) => {
-    toast.promise((data.id ? userUpdateApi : userStoreApi).process(data), {
-      pending: "Menyimpan...",
-      error: "Terjadi kesalahan",
-      success: "Berhasil disimpan",
-    });
+  const onSubmit = ({ registered_number, ...data }: Partial<UserType>) => {
+    toast.promise(
+      (data.id ? userUpdateApi : userStoreApi).process({
+        ...data,
+        registered_number:
+          registered_number ===
+          (composeState as { registered_number?: string }).registered_number
+            ? undefined
+            : registered_number,
+      }),
+      {
+        pending: "Menyimpan...",
+        error: "Terjadi kesalahan",
+        success: "Berhasil disimpan",
+      }
+    );
   };
 
   const onDelete = (id: number) => {
@@ -233,7 +243,10 @@ export default function User() {
                         userIndexApi.data?.rows[index].birthday
                       ).format("YYYY-MM-DD"),
                     });
-                    composeModal.open();
+                    composeModal.open({
+                      registered_number:
+                        userIndexApi.data?.rows[index].registered_number,
+                    });
                   }}
                 >
                   Edit

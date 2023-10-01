@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, ComponentProps } from "react";
 import { IconType } from "react-icons";
 import { Link } from "react-router-dom";
 
@@ -14,9 +14,11 @@ export default function SidebarList({
   children,
   active,
   path,
-}: SidebarListProps) {
+  ...props
+}: SidebarListProps & Partial<ComponentProps<typeof Link>>) {
   return (
     <Link
+      {...props}
       to={path}
       className={`py-4 flex justify-start items-center text-white rounded relative ${
         active ? "bg-gray-900" : "hover:bg-gray-900"
