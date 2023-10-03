@@ -29,7 +29,9 @@ export default function Attendance() {
   }, [dispatch]);
 
   useEffect(() => {
-    attendanceDailyApi.process({ period: date });
+    attendanceDailyApi
+      .remember()
+      .process({ ...attendanceDailyApi.savedProps, period: date });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
@@ -117,7 +119,11 @@ export default function Attendance() {
           />
         </>
       }
-      onSearch={(search) => console.log(search)}
+      onSearch={(search) =>
+        attendanceDailyApi
+          .remember()
+          .process({ ...attendanceDailyApi.savedProps, search })
+      }
       pageTotal={attendanceDailyApi.data?.page_count || 0}
       onPageChanged={(page) =>
         attendanceDailyApi
