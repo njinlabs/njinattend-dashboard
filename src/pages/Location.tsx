@@ -204,7 +204,7 @@ export default function Location() {
             </Button>
           </>
         }
-        onSearch={(search) => console.log(search)}
+        onSearch={(search) => locationIndexApi.remember().process({ search })}
         pageTotal={locationIndexApi.data?.page_count || 0}
         onPageChanged={(page) =>
           locationIndexApi

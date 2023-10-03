@@ -70,7 +70,7 @@ export default function User() {
         ...data,
         registered_number:
           registered_number ===
-          (composeState as { registered_number?: string }).registered_number
+          (composeState as { registered_number?: string })?.registered_number
             ? undefined
             : registered_number,
       }),
@@ -277,7 +277,7 @@ export default function User() {
             </Button>
           </>
         }
-        onSearch={(search) => console.log(search)}
+        onSearch={(search) => userIndexApi.remember().process({ search })}
         pageTotal={userIndexApi.data?.page_count || 0}
         onPageChanged={(page) =>
           userIndexApi
