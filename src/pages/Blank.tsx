@@ -62,7 +62,7 @@ export default function Blank() {
 
   return (
     <>
-      <div className="grid grid-flow-row grid-cols-4 gap-5 mb-5">
+      <div className="grid grid-flow-row grid-cols-1 lg:grid-cols-4 gap-5 mb-5">
         <StatsCard
           icon={HiArrowDownOnSquareStack}
           value={statsApi.data?.in_records}
