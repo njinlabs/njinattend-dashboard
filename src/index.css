@@ -1,69 +1,48 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  @apply text-gray-700 font-roboto;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.alert {
+  @apply rounded bg-white w-11/12 lg:w-[460px] !important;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.alert .swal2-icon {
+  @apply mx-auto -mt-16 w-32 h-32 border-8 border-white !important;
+  background-color: currentColor;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.alert .swal2-success {
+  @apply text-green-600;
+}
+
+.alert .swal2-error {
+  @apply text-red-600;
+}
+
+.alert .swal2-icon-content {
+  @apply text-white text-8xl !important;
+}
+
+.alert .swal2-title {
+  @apply text-2xl text-gray-800 p-0 px-8 mt-5 font-montserrat font-bold !important;
+}
+
+.alert .swal2-html-container {
+  @apply text-lg text-gray-600 m-0 mt-1 p-0 px-8 font-roboto !important;
+}
+
+.alert .swal2-actions {
+  @apply w-full m-0 -mb-5 mt-8 px-5 pb-5 flex items-stretch !important;
+}
+
+.alert .swal2-actions button {
+  @apply flex-1 space-x-5 px-5 py-3 rounded-sm !important;
+}
+
+.alert .swal2-confirm {
+  @apply bg-primary-500 text-gray-800 rounded !important;
 }
